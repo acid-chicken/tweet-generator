@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-import sys
 import re
-import pandas
-import MeCab
+import sys
+
 import markovify
+import MeCab
+import pandas
 
 mecabW = MeCab.Tagger("-d /usr/lib/mecab/dic/mecab-ipadic-neologd -O wakati")
 
@@ -30,19 +31,26 @@ def loadTwitterAPI(twt, params):
     return "\n".join(filterTweets(text))
 
 
-def generateAndExport(src, dest, state_size = 3):
-    src = src.replace("&lt;", "<").replace("&gt;", ">").replace("&amp;", "&").replace("?", "？").replace("!", "！").replace("，", "、").replace("．", "。").replace("。", "。\n")
+def generateAndExport(src, dest, state_size=3):
+    src = (src.replace("&lt;",
+                       "<").replace("&gt;", ">").replace("&amp;", "&").replace(
+                           "?", "？").replace("!",
+                                             "！").replace("，", "、").replace(
+                                                 "．", "。").replace("。", "。\n"))
     data = [mecabW.parse(s) for s in src.split("\n") if s != ""]
     joinedData = "".join(data)
-    modeljson = markovify.NewlineText(joinedData, state_size = state_size).to_json()
-    with open(dest, mode = "w") as f:
+    modeljson = markovify.NewlineText(joinedData,
+                                      state_size=state_size).to_json()
+    with open(dest, mode="w") as f:
         f.write(modeljson)
     return len(data)
 
 
 if __name__ == "__main__":
     if len(sys.argv) > 3:
-        learned = generateAndExport(loadTwitterCSV(sys.argv[1]), sys.argv[2], int(sys.argv[3]))
+        learned = generateAndExport(loadTwitterCSV(sys.argv[1]), sys.argv[2],
+                                    int(sys.argv[3]))
     else:
         learned = generateAndExport(loadTwitterCSV(sys.argv[1]), sys.argv[2])
-    print("Exported " + str(learned) + " lines learned data to " + sys.argv[2] + ".")
+    print("Exported " + str(learned) + " lines learned data to " +
+          sys.argv[2] + ".")
