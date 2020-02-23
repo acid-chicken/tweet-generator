@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-import sys
 import re
-import pandas
-import MeCab
+import sys
+
 import markovify
+import MeCab
+import pandas
 
 mecabW = MeCab.Tagger("-d /usr/lib/mecab/dic/mecab-ipadic-neologd -O wakati")
 
