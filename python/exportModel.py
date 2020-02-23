@@ -31,12 +31,19 @@ def loadTwitterAPI(twt, params):
 
 
 def generateAndExport(src, dest, state_size=3):
-    src = src.replace("&lt;", "<").replace("&gt;", ">").replace("&amp;", "&").replace(
-        "?", "？").replace("!", "！").replace("，", "、").replace("．", "。").replace("。", "。\n")
+    src = (
+        src.replace("&lt;", "<")
+        .replace("&gt;", ">")
+        .replace("&amp;", "&")
+        .replace("?", "？")
+        .replace("!", "！")
+        .replace("，", "、")
+        .replace("．", "。")
+        .replace("。", "。\n")
+    )
     data = [mecabW.parse(s) for s in src.split("\n") if s != ""]
     joinedData = "".join(data)
-    modeljson = markovify.NewlineText(
-        joinedData, state_size=state_size).to_json()
+    modeljson = markovify.NewlineText(joinedData, state_size=state_size).to_json()
     with open(dest, mode="w") as f:
         f.write(modeljson)
     return len(data)
@@ -44,9 +51,9 @@ def generateAndExport(src, dest, state_size=3):
 
 if __name__ == "__main__":
     if len(sys.argv) > 3:
-        learned = generateAndExport(loadTwitterCSV(
-            sys.argv[1]), sys.argv[2], int(sys.argv[3]))
+        learned = generateAndExport(
+            loadTwitterCSV(sys.argv[1]), sys.argv[2], int(sys.argv[3])
+        )
     else:
         learned = generateAndExport(loadTwitterCSV(sys.argv[1]), sys.argv[2])
-    print("Exported " + str(learned) +
-          " lines learned data to " + sys.argv[2] + ".")
+    print("Exported " + str(learned) + " lines learned data to " + sys.argv[2] + ".")
